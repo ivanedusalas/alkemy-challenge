@@ -3,7 +3,7 @@ import { Button, Form } from "react-bootstrap";
 import { ErrorMessage, Field, Formik, errors } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
-import Container from 'react-bootstrap/Container'
+import Container from "react-bootstrap/Container";
 
 const Login = () => {
   const handleLogin = (values) => {
@@ -11,7 +11,6 @@ const Login = () => {
       email: values.mail,
       password: values.password,
     };
-    console.log(body);
     axios.post("http://challenge-react.alkemy.org/", body).then((response) => {
       localStorage.setItem("token", response.data.token);
     });
@@ -75,7 +74,7 @@ const Login = () => {
               />
             </Form.Group>
             <div className="d-grid gap-2">
-              <Button variant="primary" type='submit'>
+              <Button variant="primary" type="submit">
                 Login
               </Button>
             </div>

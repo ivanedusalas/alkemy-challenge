@@ -10,6 +10,14 @@ import Grid from "../components/Grid";
 
 const Home = (props) => {
   const navigate = useNavigate();
+  const statList = [
+    "intelligence",
+    "strength",
+    "speed",
+    "durability",
+    "power",
+    "combat",
+  ];
 
   const handleDetailClick = (heroe) => {
     navigate(`/detail/${heroe.id}`);
@@ -22,17 +30,56 @@ const Home = (props) => {
       dispatch(contadorGood(-1));
     } else dispatch(contadorBad(-1));
   };
-  const renderPromedy = (data) => {
-    let suma = 0;
-    let promedio = 0;
+  const renderPromedy = () => {
+    return (
+      <div>
+        <div>
+          <h2>{getMostHigherStat()}</h2>
+          {statList.map((stat) => (
+            <p>
+              {stat} : {getTotalStat(stat)}
+            </p>
+          ))}
+        </div>
+        <span>Team Height Promedy: {getAverage(true)}</span>
+        <span>Team Weight Promedy: {getAverage()}</span>
+      </div>
+    );
+  };
+
+  const getTotalStat = (stat) => {
+    let total = 0;
     props.heroes.forEach((heroe) => {
-      if (!parseInt(heroe.data)) {
-        suma += 0;
-      } else {
-        suma += parseInt(heroe.data);
-      }
+      let heroeStat = heroe.powerstats[stat];
+      total += heroeStat == "null" ? 0 : parseInt(heroeStat);
     });
-    return promedio = suma / props.heroes.length;
+    return total;
+  };
+
+  const getMostHigherStat = () => {
+    let higherStat = "";
+    let higherStatQuantity = 0;
+    for (let index = 0; index < statList.length; index++) {
+      const stat = statList[index];
+      const statQuantity = getTotalStat(stat);
+      if (statQuantity > higherStatQuantity) {
+        higherStat = stat;
+        higherStatQuantity = statQuantity;
+      }
+    }
+    return higherStat;
+  };
+
+  const getAverage = (isHeight = false) => {
+    let suma = 0;
+    props.heroes.forEach((heroe) => {
+      const value = parseInt(
+        isHeight ? heroe.appearance.height[1] : heroe.appearance.weight[1]
+      );
+      suma += value;
+    });
+    let promedio = suma / props.heroes.length;
+    return Math.round(promedio);
   };
 
   const renderHeroes = () =>
@@ -85,7 +132,7 @@ const Home = (props) => {
     );
   return (
     <Fragment>
-      {/* <Grid promedy={renderPromedy(props.heroes.appearance.weight[0])} /> */}
+      <div>{renderPromedy()}</div>
       <div>{renderHeroes()}</div>
     </Fragment>
   );
@@ -96,9 +143,3 @@ const mapStateToProps = (state) => {
   };
 };
 export default connect(mapStateToProps)(Home);
-// let intelligence= 0
-//     let strength= 0
-//     let speed= 0
-//     let durability= 0
-//     let power= 0
-//     let combat= 0

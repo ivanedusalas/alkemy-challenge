@@ -11,12 +11,11 @@ import Grid from "../components/Grid";
 const Search = (props) => {
   const [cardHeroes, SetCardHeroes] = useState();
 
-  const handleLogin = (values) => {
+  const handleSearch = (values) => {
     const body = values.search;
-
     axios
       .get(
-        `https://www.superheroapi.com/api.php/10227761695413006/search/${body}`
+        `https://www.superheroapi.com/api.php/1228425527987554/search/${body}`
       )
       .then((res) => {
         SetCardHeroes(res.data);
@@ -29,9 +28,9 @@ const Search = (props) => {
 
   const addHero = (heroe) => {
     const { dispatch } = props;
-    if (props.heroes.length < 7) {
+    const errorMessage = "No pueden haber mas de 6 Heroes";
+    if (props.heroes.length < 6) {
       if (!props.heroes.some((elem) => elem.id === heroe.id)) {
-        console.log("hola");
         if (heroe.biography.alignment === "good" && props.contadorGood < 3) {
           dispatch(contadorGood(1));
           dispatch(agregarHeroe(heroe));
@@ -42,6 +41,8 @@ const Search = (props) => {
           }
         }
       }
+    } else {
+      alert(errorMessage);
     }
   };
 
@@ -56,32 +57,20 @@ const Search = (props) => {
     return (
       cardHeroes &&
       cardHeroes.results.map((heroe) => (
-        <Cards
-          name={heroe.name}
-          image={heroe.image.url}
-          alignment={heroe.biography.alignment}
-          handleAdd={() => {
-            addHero(heroe);
-          }}
-          weight={heroe.appearance.weight[0]}
-        ></Cards>
+        <>
+          <Cards
+            name={heroe.name}
+            image={heroe.image.url}
+            alignment={heroe.biography.alignment}
+            handleAdd={() => {
+              addHero(heroe);
+            }}
+            weight={heroe.appearance.weight[0]}
+          ></Cards>
+        </>
       ))
     );
   };
-
-  // let sumatoriaObjeto = props.heroes.reduce(
-  //   function (acumulador, siguienteValor) {
-  //     console.log(siguienteValor);
-  //     console.log(acumulador.weight)
-  //     return {
-  //       weight: parseInt(acumulador.weight) + parseInt(siguienteValor.appearance.weight[0])
-  //     }
-  //   },
-  //   { weight: 0 }
-  // );
-  // console.log(sumatoriaObjeto);
-  // let promedioEdad = sumatoriaObjeto.weight / props.heroes.length;
-  // console.log(promedioEdad)
 
   return (
     <Fragment>
@@ -93,7 +82,7 @@ const Search = (props) => {
             .max(5, "Máximo 5 Caracteres"),
         })}
         onSubmit={(values) => {
-          handleLogin(values);
+          handleSearch(values);
         }}
       >
         {({ errors, handleSubmit }) => (
@@ -110,7 +99,7 @@ const Search = (props) => {
               <ErrorMessage
                 name="search"
                 component={() => (
-                  <div class="alert alert-danger" role="alert">
+                  <div className="alert alert-danger" role="alert">
                     {errors.search}
                   </div>
                 )}

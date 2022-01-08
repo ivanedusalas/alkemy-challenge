@@ -2,7 +2,6 @@ import { Fragment } from "react";
 import { Button, Card } from "react-bootstrap";
 
 const Cards = (props) => {
-  console.log(props);
   return (
     <Fragment>
       <Card style={{ width: "18rem" }}>
